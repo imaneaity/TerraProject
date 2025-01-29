@@ -11,6 +11,7 @@ The steps undertaken for the completion of this project are as follows:
     - RDS instance
     - Load balancer
     - Route 53 DNS config
+
 At this stage however the code is written in one single main.tf file and the values and passwords are hardcoded.
 ![](./web-app/architecture.png)
 

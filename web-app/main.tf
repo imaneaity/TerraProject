@@ -17,13 +17,14 @@ terraform {
   }
 }
 
+
 provider "aws" {
-  region = "eu-west-2"
+  region = var.region
 }
 
 resource "aws_instance" "instance_1" {
-  ami             = "ami-04ba8620fc44e2264" # Ubuntu 20.04 LTS // us-east-1
-  instance_type   = "t2.micro"
+  ami             = var.ami
+  instance_type   = var.instance_type
   security_groups = [aws_security_group.instances.name]
   user_data       = <<-EOF
               #!/bin/bash
@@ -33,8 +34,8 @@ resource "aws_instance" "instance_1" {
 }
 
 resource "aws_instance" "instance_2" {
-  ami             = "ami-04ba8620fc44e2264" # Ubuntu 20.04 LTS // us-east-1
-  instance_type   = "t2.micro"
+  ami             = var.ami
+  instance_type   = var.instance_type
   security_groups = [aws_security_group.instances.name]
   user_data       = <<-EOF
               #!/bin/bash
@@ -44,7 +45,7 @@ resource "aws_instance" "instance_2" {
 }
 
 resource "aws_s3_bucket" "bucket" {
-  bucket_prefix = "project1-web-app-data"
+  bucket_prefix = var.bucket_prefix
   force_destroy = true
 }
 
@@ -185,14 +186,16 @@ resource "aws_lb" "load_balancer" {
   security_groups    = [aws_security_group.alb.id]
 
 }
+
+
 /*
 resource "aws_route53_zone" "primary" {
-  name = "devopsdeployed.com"
+  name = var.domain
 }
 
 resource "aws_route53_record" "root" {
   zone_id = aws_route53_zone.primary.zone_id
-  name    = "devopsdeployed.com"
+  name    = var.domain
   type    = "A"
 
   alias {
@@ -204,19 +207,15 @@ resource "aws_route53_record" "root" {
 */
 
 
+
 resource "aws_db_instance" "db_instance" {
-  allocated_storage = 20
-  # This allows any minor version within the major engine_version
-  # defined below, but will also result in allowing AWS to auto
-  # upgrade the minor version of your DB. This may be too risky
-  # in a real production environment.
-  auto_minor_version_upgrade = true
-  storage_type               = "standard"
-  engine                     = "postgres"
-  engine_version             = "12"
-  instance_class             = "db.t3.micro"
-  name                       = "mydb"
-  username                   = "foo"
-  password                   = "foobarbaz"
-  skip_final_snapshot        = true
+  allocated_storage   = 20
+  storage_type        = "standard"
+  engine              = "postgres"
+  engine_version      = "12"
+  instance_class      = "db.t3.micro"
+  name                = var.db_name
+  username            = var.db_user
+  password            = var.db_pass
+  skip_final_snapshot = true
 }
