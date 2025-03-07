@@ -21,44 +21,27 @@ provider "aws" {
   region = "eu-west-2"
 }
 
-variable "db_pass_1" {
-  description = "password for database #1"
+variable "db_pass" {
+  description = "password for database"
   type        = string
   sensitive   = true
 }
 
-variable "db_pass_2" {
-  description = "password for database #2"
-  type        = string
-  sensitive   = true
+locals {
+  environment_name = terraform.workspace
 }
 
 module "web_app_1" {
   source = "../webapp_module"
 
   # Input Variables
-  bucket_prefix    = "web-app-1-data"
-  //domain           = "some-domain.com"
-  app_name         = "web-app-1"
-  environment_name = "production"
-  instance_type    = "t2.micro"
-  create_dns_zone  = true
-  db_name          = "webapp1db"
+  bucket_prefix    = "web-app-data-${local.environment_name}"
+  #domain           = "imaneaity.com"
+  environment_name = local.environment_name
+  instance_type    = "t3.micro"
+  create_dns_zone  = terraform.workspace == "production" ? true : false
+  db_name          = "${local.environment_name}mydb"
   db_user          = "foo"
-  db_pass          = var.db_pass_1
+  db_pass          = var.db_pass
 }
 
-module "web_app_2" {
-  source = "../webapp_module"
-
-  # Input Variables
-  bucket_prefix    = "web-app-2-data"
-  //domain           = "another-domain.com"
-  app_name         = "web-app-2"
-  environment_name = "production"
-  instance_type    = "t2.micro"
-  create_dns_zone  = true
-  db_name          = "webapp2db"
-  db_user          = "bar"
-  db_pass          = var.db_pass_2
-}

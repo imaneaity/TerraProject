@@ -18,6 +18,14 @@ At this stage however the code is written in one single main.tf file and the val
 
 4. Add a module to better organize the project.
 
+5. Decide on the best way to manage different environments, there are 2 options:
+    - Use terraform workspaces
+    - Use subdirectory environments
+    Because this poject is a simple one we chose the terraform workspaces, however this can be confusing when the project requires changing the environment frequently or when multiple people work on the same project.
+
+6. In order to avoid code rot we perform tests on it. for this we use Terratest from gruntwork-io, refer to /Terratest.
+
+7. Make sure to understand developpers workflows and best practices
 
 
 
